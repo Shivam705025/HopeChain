@@ -6,54 +6,46 @@
     /* CSS Styles */
     body {
       font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
       margin: 0;
       padding: 0;
     }
 
-    .header {
-      background-color: #111;
-      color: #fff;
-      padding: 20px;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
       text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #ff9a00, #fb5b01, #e8244c, #bd00a1, #7209b7, #480ca8, #3f37c9, #4361ee, #4895ef, #4cc9f0);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
     .logo {
       width: 200px;
       height: auto;
+      margin-bottom: 20px;
     }
 
-    .content {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px;
-      text-align: justify;
-    }
-
-    .footer {
-      background-color: #111;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
+    p {
+      font-size: 18px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="header">
+  <div class="container">
     <img class="logo" src="hopechain_logo.png" alt="HopeChain Logo">
-    <h1>Welcome to HopeChain</h1>
-    <p>A blockchain project for charity and donation.</p>
-  </div>
-
-  <div class="content">
-    <h2>About HopeChain</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vitae ligula vel elit commodo pharetra vel sed urna. Ut nec convallis ipsum, nec vulputate enim. Donec lacinia ligula non aliquet malesuada. Nulla facilisi. Nam maximus magna a quam dignissim, sed pulvinar justo accumsan. Praesent consequat augue sit amet tellus venenatis, a aliquam velit rutrum. Integer consequat cursus lorem et feugiat.</p>
-
-    <h2>Our Mission</h2>
-    <p>Integer eu consequat justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed pretium mauris non orci hendrerit, et dignissim sem volutpat. Ut nec luctus neque. Vestibulum facilisis posuere purus, at scelerisque mi aliquet vel. Nullam vulputate felis nec tempus finibus. Vivamus cursus facilisis malesuada. Sed id enim feugiat, cursus orci id, egestas orci.</p>
-  </div>
-
-  <div class="footer">
-    <p>&copy; 2023 HopeChain. All rights reserved.</p>
+    <h1>HopeChain</h1>
+    <p>A blockchain project dedicated to spreading hope and making a positive impact.</p>
   </div>
 </body>
 </html>
