@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Token Minting Website</title>
+  <style>
+    /* CSS styling goes here */
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  margin: 0;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+h2 {
+  color: #333;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+p {
+  color: #333;
+}
+
+#eligibilityStatus {
+  font-weight: bold;
+}
+
+#mintingStatus {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#tokenStatsSection {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+#tokenStatsSection p {
+  margin: 10px 0;
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Token Minting Website</h1>
+  </header>
+
+  <section id="walletSection">
+    <h2>Connect Your Wallet</h2>
+    <button id="connectButton">Connect Wallet</button>
+  </section>
+
+  <section id="eligibilitySection">
+    <h2>Check Eligibility</h2>
+    <input type="text" id="walletAddressInput" placeholder="Enter your wallet address">
+    <button id="checkEligibilityButton">Check Eligibility</button>
+    <p id="eligibilityStatus"></p>
+  </section>
+
+  <section id="mintingSection">
+    <h2>Mint Tokens</h2>
+    <button id="mintButton" disabled>Mint Tokens</button>
+    <p id="mintingStatus"></p>
+  </section>
+
+  <section id="tokenStatsSection">
+    <h2>Token Statistics</h2>
+    <p id="tokensMinted">Tokens Minted: 0</p>
+    <p id="tokensRemaining">Tokens Remaining: 10000000000000</p>
+    <p id="usersClaimed">Users Claimed: 0</p>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+  <script>
+    // Connect to Web3 provider
+    async function connectWallet() {
+      try {
+        if (window.ethereum) {
+          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+          return accounts[0];
+        } else {
+          throw new Error('Web3 provider not found');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Check if wallet address is eligible
+    function checkEligibility() {
+      const walletAddress = document.getElementById('walletAddressInput').value;
+      // Implement eligibility check logic here
+      // Example: Check if the wallet address is in the whitelist
+      const isEligible = checkWhitelist(walletAddress);
+
+      const eligibilityStatus = document.getElementById('eligibilityStatus');
+      eligibilityStatus.textContent = isEligible ? 'Eligible' : 'Not Eligible';
+      eligibilityStatus.style.color = isEligible ? 'green' : 'red';
+
+      // Enable minting button if eligible
+      const mintButton = document.getElementById('mintButton');
+      mintButton.disabled = !isEligible;
+    }
+
+    // Mint tokens
+    function mintTokens() {
+      const walletAddress = document.getElementById('walletAddressInput').value;
+      // Implement token minting logic here
+      // Example: Mint tokens for the wallet address
+
+      // Update minting status
+      const mintingStatus = document.getElementById('mintingStatus');
+      mintingStatus.textContent = 'Tokens minted successfully';
+      mintingStatus.style.color = 'green';
+
+      // Update token statistics
+      const tokensMinted = document.getElementById('tokensMinted');
+      const tokensRemaining = document.getElementById('tokensRemaining');
+      const usersClaimed = document.getElementById('usersClaimed');
+
+           // Update the token statistics based on the minting
+      // Example: Increment the minted tokens count and decrement the remaining tokens count
+      let mintedTokensCount = parseInt(tokensMinted.textContent.split(':')[1]);
+      let remainingTokensCount = parseInt(tokensRemaining.textContent.split(':')[1]);
+      let claimedUsersCount = parseInt(usersClaimed.textContent.split(':')[1]);
+
+      // Increment the minted tokens count
+      mintedTokensCount++;
+      tokensMinted.textContent = `Tokens Minted: ${mintedTokensCount}`;
+
+      // Decrement the remaining tokens count
+      remainingTokensCount--;
+      tokensRemaining.textContent = `Tokens Remaining: ${remainingTokensCount}`;
+
+      // Increment the claimed users count
+      claimedUsersCount++;
+      usersClaimed.textContent = `Users Claimed: ${claimedUsersCount}`;
+    }
+
+    // Event listeners
+    document.getElementById('connectButton').addEventListener('click', connectWallet);
+    document.getElementById('checkEligibilityButton').addEventListener('click', checkEligibility);
+    document.getElementById('mintButton').addEventListener('click', mintTokens);
+  </script>
+</body>
+</html>
