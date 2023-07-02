@@ -112,18 +112,32 @@ p {
   <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
   <script>
     // Connect to Web3 provider
-    async function connectWallet() {
-      try {
-        if (window.ethereum) {
-          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-          return accounts[0];
-        } else {
-          throw new Error('Web3 provider not found');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+    // Connect Wallet function
+async function connectWallet() {
+  try {
+    if (window.ethereum) {
+      // Request account access
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      // Set the connected account
+      const connectedAccount = accounts[0];
+
+      // Update the UI to show the connected account
+      const accountAddress = document.getElementById('accountAddress');
+      accountAddress.textContent = `Connected Account: ${connectedAccount}`;
+      accountAddress.style.display = 'block';
+
+      // Enable the "Check Eligibility" and "Mint Tokens" buttons
+      document.getElementById('checkEligibilityButton').disabled = false;
+      document.getElementById('mintButton').disabled = false;
+    } else {
+      alert('Please install a wallet like MetaMask to connect to the Ethereum network.');
     }
+  } catch (error) {
+    console.error('Failed to connect wallet:', error);
+  }
+}
+
 
     // Check if wallet address is eligible
     function checkEligibility() {
