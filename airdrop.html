@@ -71,11 +71,16 @@ p {
   margin: 10px 0;
 }
 
-@media screen and (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-}
+    @media screen and (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      input[type="text"],
+      button {
+        width: 100%;
+      }
+    }
 
   </style>
 </head>
@@ -194,6 +199,18 @@ async function connectWallet() {
     document.getElementById('connectButton').addEventListener('click', connectWallet);
     document.getElementById('checkEligibilityButton').addEventListener('click', checkEligibility);
     document.getElementById('mintButton').addEventListener('click', mintTokens);
+
+    function checkScreenSize() {
+      if (window.innerWidth <= 600) {
+        // Apply mobile styles
+        document.getElementById('walletAddressInput').style.width = '100%';
+        document.getElementById('mintButton').style.width = '100%';
+      } else {
+        // Apply desktop styles
+        document.getElementById('walletAddressInput').style.width = 'auto';
+        document.getElementById('mintButton').style.width = 'auto';
+      }
+    }
   </script>
 </body>
 </html>
