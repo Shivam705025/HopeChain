@@ -1,216 +1,452 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HopeChain Airdrop</title>
-  <style>
-    /* CSS styling goes here */
-    body {
-  font-family: Arial, sans-serif;
-  background-color: #eeeee4;
-  margin: 0;
-  padding: 20px;
-}
+    <title>Donation Contract</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .donation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 20px;
+        }
+        .donation-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+        }
+        .donation-card h2 {
+            margin-top: 0;
+        }
+        .donate-button {
+            background-color: pink;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .donate-button:hover {
+            background-color: #ff6b9b;
+        }
+                #createDonationForm {
+            display: none;
+            margin-top: 20px;
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 4px;
+        }
 
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
+        #createDonationForm label {
+            display: block;
+            margin-bottom: 10px;
+        }
 
-h1 {
-  color: #333;
-}
+        #createDonationForm input[type="text"],
+        #createDonationForm textarea,
+        #createDonationForm input[type="date"],
+        #createDonationForm input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
 
-section {
-  margin-bottom: 40px;
-}
+        #createDonationForm button[type="submit"] {
+            background-color: pink;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+                .check-eligibility-button {
+            background-color: pink;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
 
-h2 {
-  color: #333;
-}
+        .check-eligibility-button:hover {
+            background-color: #ff6b9b;
+        }
 
-input[type="text"] {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-p {
-  color: #333;
-}
-
-#eligibilityStatus {
-  font-weight: bold;
-}
-
-#mintingStatus {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-#tokenStatsSection {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-}
-
-#tokenStatsSection p {
-  margin: 10px 0;
-}
-
-    @media screen and (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
-
-      input[type="text"],
-      button {
-        width: 100%;
-      }
-    }
-
-  </style>
+        .eligibility-text {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            color: pink;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Hopechain Airdrop</h1>
-  </header>
-  <section id="walletSection">
-    <h2>Connect Your Wallet</h2>
-    <button id="connectButton">Connect Wallet</button>
-  </section>
-    <p id="accountAddress"></p>
-
-  <section id="eligibilitySection">
-    <h2>Check Eligibility</h2>
-    <input type="text" id="walletAddressInput" placeholder="Enter your wallet address">
-    <button id="checkEligibilityButton">Check Eligibility</button>
-    <p id="eligibilityStatus"></p>
-  </section>
-
-  <section id="mintingSection">
-    <h2>Mint Tokens</h2>
-    <button id="mintButton" disabled>Mint Tokens</button>
-    <p id="mintingStatus"></p>
-  </section>
-
-  <section id="tokenStatsSection">
-    <h2>Token Statistics</h2>
-    <p id="tokensMinted">Tokens Minted: 0</p>
-    <p id="tokensRemaining">Tokens Remaining: 10000000000000</p>
-    <p id="usersClaimed">Users Claimed: 0</p>
-  </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
-  <script>
-    // Connect to Web3 provider
-    // Connect Wallet function
-async function connectWallet() {
-  try {
-    if (window.ethereum) {
-      // Request account access
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-      // Set the connected account
-      const connectedAccount = accounts[0];
-
-      // Update the UI to show the connected account
-      const accountAddress = document.getElementById('accountAddress');
-      accountAddress.textContent = `Connected Account: ${connectedAccount}`;
-      accountAddress.style.display = 'block';
-
-      // Enable the "Check Eligibility" and "Mint Tokens" buttons
-      document.getElementById('checkEligibilityButton').disabled = false;
-      document.getElementById('mintButton').disabled = false;
-    } else {
-      alert('Please install a wallet like MetaMask to connect to the Ethereum network.');
-    }
-  } catch (error) {
-    console.error('Failed to connect wallet:', error);
-  }
-}
-
-
-    // Check if wallet address is eligible
-    function checkEligibility() {
-      const walletAddress = document.getElementById('walletAddressInput').value;
-      // Implement eligibility check logic here
-      // Example: Check if the wallet address is in the whitelist
-      const isEligible = checkWhitelist(walletAddress);
-
-      const eligibilityStatus = document.getElementById('eligibilityStatus');
-      eligibilityStatus.textContent = isEligible ? 'Eligible' : 'Not Eligible';
-      eligibilityStatus.style.color = isEligible ? 'green' : 'red';
-
-      // Enable minting button if eligible
-      const mintButton = document.getElementById('mintButton');
-      mintButton.disabled = !isEligible;
-    }
-
-    // Mint tokens
-    function mintTokens() {
-      const walletAddress = document.getElementById('walletAddressInput').value;
-      // Implement token minting logic here
-      // Example: Mint tokens for the wallet address
-
-      // Update minting status
-      const mintingStatus = document.getElementById('mintingStatus');
-      mintingStatus.textContent = 'Tokens minted successfully';
-      mintingStatus.style.color = 'green';
-
-      // Update token statistics
-      const tokensMinted = document.getElementById('tokensMinted');
-      const tokensRemaining = document.getElementById('tokensRemaining');
-      const usersClaimed = document.getElementById('usersClaimed');
-
-           // Update the token statistics based on the minting
-      // Example: Increment the minted tokens count and decrement the remaining tokens count
-      let mintedTokensCount = parseInt(tokensMinted.textContent.split(':')[1]);
-      let remainingTokensCount = parseInt(tokensRemaining.textContent.split(':')[1]);
-      let claimedUsersCount = parseInt(usersClaimed.textContent.split(':')[1]);
-
-      // Increment the minted tokens count
-      mintedTokensCount++;
-      tokensMinted.textContent = `Tokens Minted: ${mintedTokensCount}`;
-
-      // Decrement the remaining tokens count
-      remainingTokensCount--;
-      tokensRemaining.textContent = `Tokens Remaining: ${remainingTokensCount}`;
-
-      // Increment the claimed users count
-      claimedUsersCount++;
-      usersClaimed.textContent = `Users Claimed: ${claimedUsersCount}`;
-    }
-
-    // Event listeners
-    document.getElementById('connectButton').addEventListener('click', connectWallet);
-    document.getElementById('checkEligibilityButton').addEventListener('click', checkEligibility);
-    document.getElementById('mintButton').addEventListener('click', mintTokens);
-
-    function checkScreenSize() {
-      if (window.innerWidth <= 600) {
-        // Apply mobile styles
-        document.getElementById('walletAddressInput').style.width = '100%';
-        document.getElementById('mintButton').style.width = '100%';
-      } else {
-        // Apply desktop styles
-        document.getElementById('walletAddressInput').style.width = 'auto';
-        document.getElementById('mintButton').style.width = 'auto';
+    <div class="container">
+        <h1>HOPE CHAIN AIRDROP</h1>
+        <div align="center">
+        <p style="color: pink;">Create Donation to become eligible for airdrop</p>
+        </div>
+        <button class="check-eligibility-button" onclick="checkEligibility()">Check Eligibility</button>
+        <div class="eligibility-text" id="eligibilityText"></div>
+        <button class="donate-button" onclick="toggleCreateDonationForm()">Create Donation</button>
+         <div id="createDonationForm">
+        <h2>Create a Donation</h2>
+        <form id="donationForm">
+            <label for="addresses">Addresses:</label>
+            <input type="text" id="addresses" required><br>
+            <label for="name">Name:</label>
+            <input type="text" id="name" required><br>
+            <label for="description">Description:</label>
+            <textarea id="description" required></textarea><br>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" required><br>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" required><br>
+            <label for="minDonation">Min Donation:</label>
+            <input type="number" id="minDonation" required><br>
+            <label for="maxDonation">Max Donation:</label>
+            <input type="number" id="maxDonation" required><br>
+            <button type="submit">Create</button>
+        </form>
+    </div>
+        <h2>Donations</h2>
+        <div class="donation-cards" id="donationCards"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+    <script>
+        const donationContractAddress = '0x3fe76112c68fa9685bbe5a45308632c2404ec351';
+        const donationContractABI = [
+            {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_addresses",
+        "type": "address[]"
+      },
+      {
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "name": "_startDate",
+        "type": "uint256"
+      },
+      {
+        "name": "_endDate",
+        "type": "uint256"
+      },
+      {
+        "name": "_minDonation",
+        "type": "uint256"
+      },
+      {
+        "name": "_maxDonation",
+        "type": "uint256"
       }
-    }
-  </script>
+    ],
+    "name": "addDonation",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getDonations",
+    "outputs": [
+      {
+        "components": [
+          {
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "name": "addresses",
+            "type": "address[]"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "startDate",
+            "type": "uint256"
+          },
+          {
+            "name": "endDate",
+            "type": "uint256"
+          },
+          {
+            "name": "minDonation",
+            "type": "uint256"
+          },
+          {
+            "name": "maxDonation",
+            "type": "uint256"
+          },
+          {
+            "name": "totalDonations",
+            "type": "uint256"
+          },
+          {
+            "name": "distributedDonations",
+            "type": "uint256"
+          }
+        ],
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_donationId",
+        "type": "uint256"
+      }
+    ],
+    "name": "donate",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_donationId",
+        "type": "uint256"
+      }
+    ],
+    "name": "distributeDonations",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+    {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "donationId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "creator",
+        "type": "address"
+      }
+    ],
+    "name": "DonationAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "donationId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DonationDistributed",
+    "type": "event"
+  }
+        ];
+
+        const web3 = new Web3(window.ethereum);
+        const donationContract = new web3.eth.Contract(donationContractABI, donationContractAddress);
+
+        // Event listener for the createDonationForm submit
+        document.getElementById('createDonationForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Get form input values
+            const addresses = document.getElementById('addresses').value.split(',');
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const startDate = Math.floor(new Date(document.getElementById('startDate').value) / 1000);
+            const endDate = Math.floor(new Date(document.getElementById('endDate').value) / 1000);
+            const minDonation = document.getElementById('minDonation').value;
+            const maxDonation = document.getElementById('maxDonation').value;
+
+            try {
+                const accounts = await web3.eth.requestAccounts();
+                const creator = accounts[0];
+
+                await donationContract.methods.addDonation(
+                    addresses,
+                    name,
+                    description,
+                    startDate,
+                    endDate,
+                    minDonation,
+                    maxDonation
+                ).send({ from: creator, value: 0.2 * 10 ** 18 }); // Sending 0.2 Ether as tax amount
+
+                alert('Donation created successfully!');
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert('Failed to create donation. Please try again.');
+            }
+        });
+
+        // Function to retrieve and display the list of donations
+        async function getDonations() {
+            try {
+                const donationCards = document.getElementById('donationCards');
+                const donations = await donationContract.methods.getDonations().call();
+
+                for (let i = 0; i < donations.length; i++) {
+                    const donation = donations[i];
+                    const card = document.createElement('div');
+                    card.className = 'donation-card';
+                    card.innerHTML = `
+                        <h2>${donation.name}</h2>
+                        <p>${donation.description}</p>
+                        <p><strong>Start Date:</strong> ${new Date(donation.startDate * 1000)}</p>
+                        <p><strong>End Date:</strong> ${new Date(donation.endDate * 1000)}</p>
+                        <p><strong>Min Donation:</strong> ${donation.minDonation}</p>
+                        <p><strong>Max Donation:</strong> ${donation.maxDonation}</p>
+                        <button class="donate-button" onclick="donate(${i})">Donate</button>
+                    `;
+                    donationCards.appendChild(card);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Failed to retrieve donations. Please try again.');
+            }
+        }
+
+        // Function to handle donation
+        async function donate(donationId) {
+            try {
+                const donations = await donationContract.methods.getDonations().call();
+                const donation = donations[donationId];
+
+                const donationAmount = Number(
+                    prompt(`Enter donation amount (between ${donation.minDonation} and ${donation.maxDonation}):`)
+                );
+
+                if (donationAmount < donation.minDonation || donationAmount > donation.maxDonation) {
+                    alert('Invalid donation amount. Please enter a valid amount.');
+                    return;
+                }
+
+                const accounts = await web3.eth.requestAccounts();
+                const donor = accounts[0];
+
+                await donationContract.methods.donate(donationId).send({
+                    from: donor,
+                    value: donationAmount + 0.1 * 10 ** 18, // Adding 0.1 Ether as tax amount
+                });
+
+                alert('Donation successful!');
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert('Failed to make a donation. Please try again.');
+            }
+        }
+
+        // Toggle visibility of create donation form
+        function toggleCreateDonationForm() {
+            const form = document.getElementById('createDonationForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Execute the getDonations function when the page loads
+        window.addEventListener('load', () => {
+            getDonations();
+        });
+
+        async function checkEligibility() {
+            try {
+                const accounts = await web3.eth.requestAccounts();
+                const creator = accounts[0];
+
+                const donations = await donationContract.methods.getDonations().call();
+
+                const hasCreatedDonation = donations.some(donation => donation.creator.toLowerCase() === creator.toLowerCase());
+
+                const eligibilityText = document.getElementById('eligibilityText');
+                eligibilityText.textContent = hasCreatedDonation ? 'Eligible for Airdrop' : 'Not Eligible for Airdrop';
+            } catch (error) {
+                console.error(error);
+                alert('Failed to check eligibility. Please try again.');
+            }
+        }
+
+    </script>
 </body>
 </html>
